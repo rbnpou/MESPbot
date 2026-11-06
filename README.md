@@ -51,11 +51,97 @@ Para compilar este proyecto en el IDE de Arduino, instala las siguientes librer�
 - `ESPAsyncWebServer` (de me-no-dev / ESPAsyncWebServer)
 - `AsyncTCP` (requerida por el servidor web asíncrono en ESP32)
 
+# 🎛 Detalles prácticos y dependencias físicas
+
+### La librería del driver USB Host (`cdcacm_ftdi.h`):
+- En el módulo `usb_host_mesh.cpp` incluimos `#include "cdcacm_ftdi.h"`. Asegúrate de tener instalada y disponible en tu entorno la librería oficial de soporte USB Host de Espressif (como `Espressif USB Host` o la implementación de CDC-ACM para ESP32-S3) si planeas usar el modo USB nativo con la Heltec T114. Si vas a usar exclusivamente los modelos C3/C5 o S3 por UART, esa inclusión de cabecera no se usará.
+
+### Los Pines UART por defecto:
+- En `usb_host_mesh.cpp` configuramos por defecto los pines GPIO 4 (RX) y GPIO 5 (TX) para la comunicación serie (UART1). Dependiendo del factor de forma exacto de tu placa (ESP32-S3 Mini, C3 SuperMini, etc.), asegúrate de que esos pines coincidan físicamente con los pines libres de tu placa y los del nodo Meshtastic.
+
 # 🌐 Uso del Portal Cautivo
 - Al encender el microcontrolador, busca redes Wi-Fi en tu teléfono o PC y conéctate a `ESP32-MeshBot-Setup`.
 - El portal cautivo abrirá automáticamente la interfaz (si no abre, ingresa a `http://192.168.4.1`).
 - Configura el nombre del bot, el tipo de hardware adecuado según la tabla anterior, el modo de energía y añade tus frases clave con sus respectivas respuestas utilizando etiquetas (ej: `Estado de red OK. Memoria libre: {heap}`).
 - Haz clic en Guardar Configuración y Reiniciar. El bot se reiniciará aplicando los cambios de inmediato.
+
+# 📡 Guía de Configuración del Nodo Meshtastic
+
+## ⚙️ 1. Concepto de Funcionamiento
+
+El **MeshBot** actúa como una interfaz inteligente externa conectada al puerto de comunicaciones serie o USB del nodo Meshtastic.
+
+```text
+[ Red LoRa / Usuarios ] 
+          │ (Mensajes de texto)
+          ▼
+   [ Nodo Meshtastic ] ──(Puerto Serie / USB Host 115200 baudios)──► [ ESP32 MeshBot ]
+                                                                             │
+   [ Nodo Meshtastic ] ◄──(Envía respuesta procesada por el Bot)──────────────┘
+```
+
+Para que esta interacción funcione en tiempo real sin interferir con otras funciones del nodo, debemos ajustar la interfaz de transmisión serie de Meshtastic.
+
+---
+
+## 🛠️ 2. Parámetros Clave en la App de Meshtastic
+
+Abre la aplicación de **Meshtastic** (Android, iOS o cliente Web vía Bluetooth/USB) e ingresa a **Configuración del Dispositivo (Device Settings)**:
+
+### Configuración del Puerto Serie (Serial Module)
+Es el módulo principal para habilitar la comunicación entre el microcontrolador y el nodo.
+
+1. Dirígete a **Configuración de Módulos (Module Configuration)** $\rightarrow$ **Serial**.
+2. Ajusta los siguientes valores:
+   * **Enabled:** `On` (Activado).
+   * **Baud Rate:** `115200` (Debe coincidir exactamente con la velocidad del bot).
+   * **Serial Mode:** `TEXTMSG` (Permite enviar y recibir texto plano por el puerto serie sin necesidad de procesar los buffer de Protobuf nativos).
+   * **TX Pin / RX Pin:** *(Dejar por defecto en 0 si usas USB Host en Heltec T114. En Faketec, asegúrate de que corresponda a los pines TX/RX expuestos)*.
+
+> **Importante:** Al seleccionar `TEXTMSG`, Meshtastic enviará directamente al puerto serie del ESP32 cualquier mensaje recibido en la red LoRa en formato de cadena de texto simple.
+
+---
+
+## 🔌 3. Verificación de la Conexión Física
+
+Dependiendo del modelo que seleccionaste en el panel web del bot:
+
+### Caso A: Heltec T114 (Modo USB Nativo)
+1. Conecta un cable USB-C a USB-C entre el **ESP32-S3 Mini** (puerto OTG/Host) y el puerto USB de la **Heltec T114**.
+2. En el portal cautivo web del bot (`http://192.168.4.1`), selecciona **Heltec T114 (USB Nativo)**.
+
+### Caso B: Faketec V3/V4 u otros (Modo UART Serial)
+1. Conecta los pines de comunicación serie cruzados:
+   * **ESP32 TX (GPIO 5)** $\rightarrow$ **Nodo RX**
+   * **ESP32 RX (GPIO 4)** $\rightarrow$ **Nodo TX**
+   * **GND** $\rightarrow$ **GND**
+2. En el portal cautivo web del bot, selecciona **Faketec V3 / V4 (UART Serial)**.
+
+---
+
+## 🧪 4. Prueba de Fuego y Diagnóstico
+
+Una vez todo configurado y encendido:
+
+1. **Prueba Básica (!ping):**
+   * Envía un mensaje desde cualquier otro nodo de la red LoRa que diga exactamente: `!ping` o `ping`.
+   * El nodo receptor pasará el mensaje al ESP32 por la interfaz serie.
+   * El ESP32 generará la respuesta: `pong! [NombreDelBot] - Heap: XXX B` y la enviará de vuelta a la red.
+
+2. **Prueba de Telemetría (!estado):**
+   * Envía el mensaje: `!estado`.
+   * Deberías recibir de vuelta: `SYS OK | Bot: MeshBot-S3 | Uptime: Xm Ys | Memoria: XXX B`.
+
+---
+
+## ❓ Solución de Problemas Frecuentes
+
+* **El bot no responde pero recibe corriente:**
+  * Verifica que en la configuración del Módulo Serial de Meshtastic el modo esté seleccionado en **`TEXTMSG`** y NO en `PROTOBUF`.
+  * Asegúrate de que la velocidad de transmisión sea de `115200` baudios.
+* **El bot responde en la consola serie pero el nodo no transmite el mensaje por radio:**
+  * Comprueba que el rol del nodo en Meshtastic sea `CLIENT` y no `REPEATER`.
+  * Asegúrate de que el canal en el que estás escribiendo no esté en modo "Mute" o de solo lectura.
 
 # 📄 Licencia
 Este proyecto se distribuye bajo la licencia MIT. Siéntete libre de adaptarlo y mejorarlo para tus redes mesh locales.
