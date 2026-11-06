@@ -7,7 +7,7 @@
 void setup() {
     Serial.begin(115200);
     delay(1500);
-    Serial.println("\n[SYS] Arrancando MeshBot en ESP32-S3 Mini...");
+    Serial.println("\n[SYS] Arrancando MESPbot en ESP32-xx Mini...");
 
     // 1. Cargar configuración persistente
     Storage_Init();
