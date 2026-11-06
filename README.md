@@ -44,4 +44,18 @@ MeshBot/
 ├── bot_logic.cpp      # Procesamiento de comandos y telemetría
 ├── web_manager.h      # Cabecera del servidor web asíncrono
 └── web_manager.cpp    # Portal cautivo e interfaz web de configuración
+```
+# 📦 Dependencias y Librerías
+Para compilar este proyecto en el IDE de Arduino, instala las siguientes librerías desde el Gestor de Librerías:
 
+- `ESPAsyncWebServer` (de me-no-dev / ESPAsyncWebServer)
+- `AsyncTCP` (requerida por el servidor web asíncrono en ESP32)
+
+# 🌐 Uso del Portal Cautivo
+- Al encender el microcontrolador, busca redes Wi-Fi en tu teléfono o PC y conéctate a `ESP32-MeshBot-Setup`.
+- El portal cautivo abrirá automáticamente la interfaz (si no abre, ingresa a `http://192.168.4.1`).
+- Configura el nombre del bot, el tipo de hardware adecuado según la tabla anterior, el modo de energía y añade tus frases clave con sus respectivas respuestas utilizando etiquetas (ej: `Estado de red OK. Memoria libre: {heap}`).
+- Haz clic en Guardar Configuración y Reiniciar. El bot se reiniciará aplicando los cambios de inmediato.
+
+# 📄 Licencia
+Este proyecto se distribuye bajo la licencia MIT. Siéntete libre de adaptarlo y mejorarlo para tus redes mesh locales.
