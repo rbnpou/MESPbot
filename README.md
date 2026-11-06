@@ -75,7 +75,7 @@ El **MeshBot** actúa como una interfaz inteligente externa conectada al puerto 
 [ Red LoRa / Usuarios ] 
           │ (Mensajes de texto)
           ▼
-   [ Nodo Meshtastic ] ──(Puerto Serie / USB Host 115200 baudios)──► [ ESP32 MeshBot ]
+   [ Nodo Meshtastic ] ──(Puerto Serie / USB Host 115200 baudios)──► [ MESPbot ]
                                                                              │
    [ Nodo Meshtastic ] ◄──(Envía respuesta procesada por el Bot)──────────────┘
 ```
