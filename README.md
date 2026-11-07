@@ -1,6 +1,6 @@
 # 🤖 MESPbot Meshtastic Bot (Modular & Captive Portal)
 
-### Aviso: el proyecto todavía está muy en alpha. Muchas funciones aún no se han probado y he introducido algunos cambios que deberían funcionar. Lo hice público para tener un repositorio que pudiera levantar desde cualquier lugar y para forzarme a seguir con el desarrollo.
+### Aviso: el proyecto todavía está muy en alpha. Muchas funciones aún no se han probado y he introducido algunos cambios que deberían funcionar. A pesar de todo eso hice público el proyecto para tener un repositorio que pudiera levantar desde cualquier lugar y para forzarme a seguir con el desarrollo.
 
 Firmware modular y autónomo para microcontroladores de la familia ESP32 diseñado para automatizar y controlar nodos **Meshtastic**. Incluye un servidor web integrado con **Portal Cautivo**, configuración persistente, sistema de respuestas automáticas con comandos personalizados y telemetría en tiempo real.
 
