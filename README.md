@@ -145,5 +145,11 @@ Una vez todo configurado y encendido:
   * Comprueba que el rol del nodo en Meshtastic sea `CLIENT` y no `REPEATER`.
   * Asegúrate de que el canal en el que estás escribiendo no esté en modo "Mute" o de solo lectura.
 
+# Ideas
+
+* Panel de estadísticas.
+* Panel de estado de la malla y el bot.
+* Conexión a internet a través de wifi para acceder a servicios fuera de la malla.
+
 # 📄 Licencia
 Este proyecto se distribuye bajo la licencia MIT. Siéntete libre de adaptarlo y mejorarlo para tus redes mesh locales.
