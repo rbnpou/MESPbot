@@ -150,6 +150,8 @@ Una vez todo configurado y encendido:
 * Panel de estadísticas.
 * Panel de estado de la malla y el bot.
 * Conexión a internet a través de wifi para acceder a servicios fuera de la malla.
+* Administración por Telegram
+* Bot para Telegram 
 
 # 📄 Licencia
 Este proyecto se distribuye bajo la licencia MIT. Siéntete libre de adaptarlo y mejorarlo para tus redes mesh locales.
